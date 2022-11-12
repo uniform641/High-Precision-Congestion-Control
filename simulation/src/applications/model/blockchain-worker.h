@@ -22,7 +22,6 @@ public:
   void Init();
   void Start();
   void Stop();
-  void CommitBlock();
 
 protected:
   virtual void DoDispose (void);
@@ -33,7 +32,7 @@ private:
     virtual void StopApplication (void);
   
     uint64_t m_nodeId;
-    uint16_t m_;
+    
   
     Ipv4Address m_sip, m_dip;
     uint16_t m_sport, m_dport;
