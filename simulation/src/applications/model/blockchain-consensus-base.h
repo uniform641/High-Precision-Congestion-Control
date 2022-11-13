@@ -1,12 +1,15 @@
 #ifndef BLOCKCHAIN_CONSENSUS_BASE_H
 #define BLOCKCHAIN_CONSENSUS_BASE_H
 
-#include <ns3/object.h>
-#include <ns3/ptr.h>
-#include <blockchain-blockchain.h>
-#include <blockchain-network-base.h>
-#include <blockchain-verifier.h>
-#include <blockchain-txpool.h>
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/log.h"
+
+#include "blockchain-blockchain.h"
+#include "blockchain-network-base.h"
+#include "blockchain-verifier.h"
+#include "blockchain-txpool.h"
+#include "blockchain-common.h"
 
 
 namespace ns3 {
@@ -40,10 +43,51 @@ public:
     BlockchainConsensusNodeState state;
     BlockchainConsensusNodeRole role;
 
-    static TypeId GetTypeId(void);
-    BlockchainConsensusBase();
+    BlockchainConsensusBase() {
+        NS_LOG_FUNCTION_NOARGS();
+    }
+
+    virtual ~BlockchainConsensusBase() {
+        NS_LOG_FUNCTION_NOARGS();
+    }
+
+    static TypeId GetTypeId(void) {
+        static TypeId tid = TypeId("ns3::BlockchainConsensusBase")
+                .SetParent<Object>()
+                .AddConstructor<BlockchainConsensusBase>();
+        return tid;
+    }
     
-    virtual ~BlockchainConsensusBase();
+    // initialize consensus parameters
+    virtual void Init() {
+
+    }
+
+    // start consensus
+    virtual void Start() {
+
+    }
+
+    // stop consensus
+    virtual void Stop() {
+
+    }
+
+    virtual void SetBlockchain(Ptr<BlockchainBlockchain> blockchain) {
+
+    }
+
+    virtual void SetNetwork(Ptr<BlockchainNetworkBase> network) {
+
+    }
+
+    virtual void SetTxpool(Ptr<BlockchainTxpool> txpool) {
+
+    }
+
+    virtual void SetVerifier(Ptr<BlockchainVerifier> verifier) {
+
+    }
 };
 }
 
