@@ -25,11 +25,15 @@ struct Transaction {
 
 struct Block {
     BlockID m_id;
+    BlockID m_parentId;
     NodeAddress m_miner;
     uint64_t m_createTime;
     uint64_t m_dataLength;
     uint64_t m_txCount;
-    std::vector<Transaction> m_txs;
+    std::vector<Ptr<Transaction>> m_txs;
+
+    Block(BlockID id, NodeAddress miner, uint64_t createTime, uint64_t dataLength, uint64_t txCount) :
+            m_id(id), m_miner(miner), m_createTime(createTime), m_dataLength(dataLength), m_txCount(txCount) {}
 };
 
 NodeAddress GenerateWorkerAddress(uint64_t workerIndex) {
