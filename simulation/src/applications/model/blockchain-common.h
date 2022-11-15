@@ -1,5 +1,5 @@
-#ifndef BLOCKCHAIN_COMMON
-#define BLOCKCHAIN_COMMON
+#ifndef BLOCKCHAIN_COMMON_H
+#define BLOCKCHAIN_COMMON_H
 
 #include <stdint.h>
 #include <vector>
@@ -56,6 +56,5 @@ BlockID GenerateBlockID(uint64_t blockIndex, NodeAddress minerAddress) {
 }
 }
 
-Ptr<BlockchainNetworkBase> GetNetwork(std::string networkName);
 
 #endif

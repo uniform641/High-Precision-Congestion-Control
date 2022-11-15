@@ -20,7 +20,7 @@ enum BlockchainNetworkType {
     BNT_RDMA
 };
 
-BlockchainNetworkType GetNetworkType(std::string networkName) {
+BlockchainNetworkType NetworkType(std::string networkName) {
     if (networkName == "tcp") {
         return BNT_TCP;
     } else if (networkName == "p2p") {
@@ -56,6 +56,20 @@ public:
 
     }
 };
+
+Ptr<BlockchainNetworkBase> GetNetwork(std::string networkName) {
+    switch (NetworkType(networkName)) {
+        case BNT_TCP:
+            return CreateObject<BlockchainNetworkTCP>();
+        case BNT_P2P:
+            return CreateObject<BlockchainNetworkP2P>();
+        case BNT_RDMA:
+            return CreateObject<BlockchainNetworkRDMA>();
+        default:
+            NS_LOG_ERROR("Unknown network type: " << networkName);
+            return CreateObject<BlockchainNetworkBase>();
+    }
+}
 }
 
 #endif

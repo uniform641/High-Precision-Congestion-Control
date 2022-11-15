@@ -15,9 +15,14 @@ TypeId BlockchainWorker::GetTypeId (void) {
                        MakeUintegerAccessor (&BlockchainWorker::m_nodeIndex),
                        MakeUintegerChecker<uint64_t> ())
         .AddAttribute("ConsensusAlgorithmName",
-                      "name of consensus algorithm",
+                      "name of consensus algorithm ['pbft', 'raft']",
                       StringValue("pbft"),
                       MakeStringAccessor(&BlockchainWorker::m_consensusName),
+                      MakeStringChecker())
+        .AddAttribute("NetworkType",
+                      "type of network ['rdma', 'tcp', 'p2p']",
+                      StringValue("tcp"),
+                      MakeStringAccessor(&BlockchainWorker::m_networkType),
                       MakeStringChecker())
     ;
     return tid;
@@ -43,18 +48,12 @@ void BlockchainWorker::StartApplication (void) {
     m_blockchain = CreateObject<BlockchainBlockchain>();
     m_txpool = CreateObject<BlockchainTxpool>();
     m_verifier = CreateObject<BlockchainVerifier>();
-    switch (GetConsensusAlgorithm(m_consensusName)) {
-        case BCA_PBFT:
-            m_consensus = CreateObject<BlockchainConsensusPBFT>();
-            break;
-        case BCA_RAFT:
-            m_consensus = CreateObject<BlockchainConsensusRaft>();
-            break;
-        default:
-            m_consensus = CreateObject<BlockchainConsensusBase>();
-            NS_LOG_WARN("No consensus algorithm is selected.");
-            break;
-    }
+    m_consensus = GetConsensusAlgorithm(m_consensusName);
+    m_network = GetNetwork(m_networkType);
+}
+
+void BlockchainWorker::StopApplication (void) {
+    NS_LOG_FUNCTION_NOARGS();
 }
 
 }

@@ -22,6 +22,7 @@ enum BlockchainConsensusAlgorithm {
     BCA_PBFT,
     BCA_RAFT
 };
+
 enum BlockchainConsensusNodeState {
     BCNS_NONE,
     BCNS_INIT,
@@ -29,6 +30,7 @@ enum BlockchainConsensusNodeState {
     BCNS_COMMIT,
     BCNS_DONE
 };
+
 enum BlockchainConsensusNodeRole {
     BCNR_NONE,
     BCNR_LEADER,
@@ -36,39 +38,30 @@ enum BlockchainConsensusNodeRole {
     BCNR_CANDIDATE
 };
 
-BlockchainConsensusAlgorithm GetConsensusAlgorithm(std::string consensus) {
-    if (consensus == "pbft") {
-        return BCA_PBFT;
-    } else if (consensus == "raft") {
-        return BCA_RAFT;
-    } else {
-        return BCA_NONE;
-    }
-}
-
-// why 'cannot overload functions distinguished by return type alone' error?
-// Ptr<BlockchainConsensusBase> SwitchConsensusAlgorithm(std::string consensus) {
-//     Ptr<BlockchainConsensusBase> consensusAlgorithm;
-//     switch (GetConsensusAlgorithm(consensus)) {
-//         case BCA_PBFT:
-//             consensusAlgorithm = CreateObject<BlockchainConsensusPBFT>();
-//             break;
-//         case BCA_RAFT:
-//             consensusAlgorithm = CreateObject<BlockchainConsensusRaft>();
-//             break;
-//         default:
-//             consensusAlgorithm = CreateObject<BlockchainConsensusBase>();
-//             NS_LOG_WARN("No consensus algorithm is selected.");
-//             break;
-//     }
-//     return consensusAlgorithm;
-// }
-
-NS_LOG_COMPONENT_DEFINE ("BlockchainConsensusBase");
-NS_OBJECT_ENSURE_REGISTERED (BlockchainConsensusBase);
 
 class BlockchainConsensusBase : public Object {
 public:
+    BlockchainConsensusBase();
+    virtual ~BlockchainConsensusBase();
+
+    static TypeId GetTypeId(void);
+    
+    // initialize consensus parameters
+    virtual void Init(Ptr<BlockchainBlockchain> blockchain,
+                      Ptr<BlockchainNetworkBase> network,
+                      Ptr<BlockchainTxpool> txpool,
+                      Ptr<BlockchainVerifier> verifier,
+                      std::string consensusName);
+    // start consensus
+    virtual void Start();
+    // stop consensus
+    virtual void Stop();
+    virtual Ptr<BlockchainBlockchain> GetBlockchain();
+    virtual Ptr<BlockchainNetworkBase> GetNetwork();
+    virtual Ptr<BlockchainTxpool> GetTxpool();
+    virtual Ptr<BlockchainVerifier> GetVerifier();
+
+private:
     Ptr<BlockchainBlockchain> m_blockchain;
     Ptr<BlockchainNetworkBase> m_network;
     Ptr<BlockchainTxpool> m_txpool;
@@ -78,52 +71,10 @@ public:
     BlockchainConsensusNodeState state;
     BlockchainConsensusNodeRole role;
 
-    BlockchainConsensusBase() {
-        NS_LOG_FUNCTION_NOARGS();
-    }
-
-    virtual ~BlockchainConsensusBase() {
-        NS_LOG_FUNCTION_NOARGS();
-    }
-
-    static TypeId GetTypeId(void) {
-        static TypeId tid = TypeId("ns3::BlockchainConsensusBase")
-                .SetParent<Object>()
-                .AddConstructor<BlockchainConsensusBase>();
-        return tid;
-    }
-    
-    // initialize consensus parameters
-    virtual void Init() {
-
-    }
-
-    // start consensus
-    virtual void Start() {
-
-    }
-
-    // stop consensus
-    virtual void Stop() {
-
-    }
-
-    virtual void SetBlockchain(Ptr<BlockchainBlockchain> blockchain) {
-
-    }
-
-    virtual void SetNetwork(Ptr<BlockchainNetworkBase> network) {
-
-    }
-
-    virtual void SetTxpool(Ptr<BlockchainTxpool> txpool) {
-
-    }
-
-    virtual void SetVerifier(Ptr<BlockchainVerifier> verifier) {
-
-    }
 };
+
+BlockchainConsensusAlgorithm ConsensusAlgorithmType(std::string consensus);
+Ptr<BlockchainConsensusBase> GetConsensusAlgorithm(std::string consensus);
 }
 
 #endif

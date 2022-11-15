@@ -40,6 +40,7 @@ private:
     uint64_t m_nodeIndex;
     NodeAddress m_nodeId;
     std::string m_consensusName; // ['pbft', 'raft']
+    std::string m_networkType; // ['rdma', 'tcp', 'p2p']
     Ptr<BlockchainBlockchain> m_blockchain;
     Ptr<BlockchainNetworkBase> m_network;
     Ptr<BlockchainTxpool> m_txpool;
