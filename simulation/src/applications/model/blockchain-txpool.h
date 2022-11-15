@@ -3,12 +3,17 @@
 
 #include <vector>
 #include <map>
+
 #include "ns3/ptr.h"
 #include "ns3/log.h"
 #include "ns3/object.h"
+
 #include "blockchain-common.h"
 
 namespace ns3 {
+NS_LOG_COMPONENT_DEFINE ("BlockchainTxpool");
+NS_OBJECT_ENSURE_REGISTERED (BlockchainTxpool);
+
 class BlockchainTxpool : public Object {
 public:
     uint64_t m_txCapacity;
@@ -43,11 +48,12 @@ public:
     }
 
     void AddTransactions(std::vector<Ptr<Transaction>>& txs) {
-        // TODO : redesign return type and implement then
+        // TODO: redesign return type and implement then
     }
 
     // return false if the transaction does not exist
     bool DropTransaction(Ptr<Transaction> tx) {
+        // TODO: optimize
         if (tx == nullptr)
             return true;
         for (auto it = m_txpool->begin(); it != m_txpool->end(); it++) {
@@ -60,35 +66,69 @@ public:
     }
 
     void DropTransactionsInBlock(Ptr<Block> block) {
-
+        if (block == nullptr)
+            return;
+        for (auto tx : block->m_txs) {
+            DropTransaction(tx);
+        }
     }
 
     bool HasTransaction(Ptr<Transaction> tx) {
-
+        if (tx == nullptr)
+            return false;
+        for (auto it = m_txpool->begin(); it != m_txpool->end(); it++) {
+            if (*it == tx) {
+                return true;
+            }
+        }
+        return false;
     }
 
     bool HasTransaction(TransactionID txId) {
-
+        for (auto it = m_txpool->begin(); it != m_txpool->end(); it++) {
+            if ((*it)->m_id == txId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     std::map<TransactionID, bool> HasTransactions(std::vector<TransactionID>& txIds) {
-
+        std::map<TransactionID, bool> result;
+        for (auto txId : txIds) {
+            result[txId] = HasTransaction(txId);
+        }
+        return result;
     }
 
     Ptr<Transaction> GetTransaction(TransactionID txId) {
-
+        for (auto it = m_txpool->begin(); it != m_txpool->end(); it++) {
+            if ((*it)->m_id == txId) {
+                return *it;
+            }
+        }
+        return nullptr;
     }
 
     std::vector<Ptr<Transaction>> GetTransactions(std::vector<TransactionID>& txIds) {
-
+        std::vector<Ptr<Transaction>> result;
+        for (auto txId : txIds) {
+            result.push_back(GetTransaction(txId));
+        }
+        return result;
     }
 
-    Ptr<std::vector<Ptr<Transaction>>> GetTransactions(uint64_t maxTxCount) {
-
+    std::vector<Ptr<Transaction>> GetTransactions(uint64_t maxTxCount) {
+        maxTxCount = maxTxCount > m_txpool->size() ? m_txpool->size() : maxTxCount;
+        std::vector<Ptr<Transaction>> result;
+        for (uint64_t i = 0; i < maxTxCount; i++) {
+            result.push_back((*m_txpool)[i]);
+        }
+        return result;
     }
 
-    Ptr<std::vector<Ptr<Transaction>>> GetAllTransactions() {
-
+    std::vector<Ptr<Transaction>> GetAllTransactions() {
+        return *m_txpool;
     }
 
 

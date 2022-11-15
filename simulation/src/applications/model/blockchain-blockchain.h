@@ -2,12 +2,17 @@
 #define BLOCKCHAIN_BLOCKCHAIN_H
 
 #include <map>
+
 #include "ns3/log.h"
 #include "ns3/object.h"
 #include "ns3/ptr.h"
+
 #include "blockchain-common.h"
 
 namespace ns3 {
+NS_LOG_COMPONENT_DEFINE ("BlockchainBlockchain");
+NS_OBJECT_ENSURE_REGISTERED (BlockchainBlockchain);
+
 class BlockchainBlockchain : public Object{
 public:
     Ptr<std::map<BlockID, Ptr<Block>>> m_blocks;

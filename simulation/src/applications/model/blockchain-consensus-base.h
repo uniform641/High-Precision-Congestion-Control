@@ -1,6 +1,8 @@
 #ifndef BLOCKCHAIN_CONSENSUS_BASE_H
 #define BLOCKCHAIN_CONSENSUS_BASE_H
 
+#include <string>
+
 #include "ns3/object.h"
 #include "ns3/ptr.h"
 #include "ns3/log.h"
@@ -10,6 +12,8 @@
 #include "blockchain-verifier.h"
 #include "blockchain-txpool.h"
 #include "blockchain-common.h"
+#include "blockchain-consensus-pbft.h"
+#include "blockchain-consensus-raft.h"
 
 
 namespace ns3 {
@@ -31,6 +35,37 @@ enum BlockchainConsensusNodeRole {
     BCNR_FOLLOWER,
     BCNR_CANDIDATE
 };
+
+BlockchainConsensusAlgorithm GetConsensusAlgorithm(std::string consensus) {
+    if (consensus == "pbft") {
+        return BCA_PBFT;
+    } else if (consensus == "raft") {
+        return BCA_RAFT;
+    } else {
+        return BCA_NONE;
+    }
+}
+
+// why 'cannot overload functions distinguished by return type alone' error?
+// Ptr<BlockchainConsensusBase> SwitchConsensusAlgorithm(std::string consensus) {
+//     Ptr<BlockchainConsensusBase> consensusAlgorithm;
+//     switch (GetConsensusAlgorithm(consensus)) {
+//         case BCA_PBFT:
+//             consensusAlgorithm = CreateObject<BlockchainConsensusPBFT>();
+//             break;
+//         case BCA_RAFT:
+//             consensusAlgorithm = CreateObject<BlockchainConsensusRaft>();
+//             break;
+//         default:
+//             consensusAlgorithm = CreateObject<BlockchainConsensusBase>();
+//             NS_LOG_WARN("No consensus algorithm is selected.");
+//             break;
+//     }
+//     return consensusAlgorithm;
+// }
+
+NS_LOG_COMPONENT_DEFINE ("BlockchainConsensusBase");
+NS_OBJECT_ENSURE_REGISTERED (BlockchainConsensusBase);
 
 class BlockchainConsensusBase : public Object {
 public:

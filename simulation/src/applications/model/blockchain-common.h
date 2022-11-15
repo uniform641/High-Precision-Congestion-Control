@@ -3,7 +3,10 @@
 
 #include <stdint.h>
 #include <vector>
+
 #include "ns3/ptr.h"
+
+#include "blockchain-network-base.h"
 
 namespace ns3 {
 // support max 2^16(65536) nodes due to transaction and block ID encoding
@@ -52,5 +55,7 @@ BlockID GenerateBlockID(uint64_t blockIndex, NodeAddress minerAddress) {
     return (minerAddress << 48) + (blockIndex & 0x0000FFFFFFFFFFFF);
 }
 }
+
+Ptr<BlockchainNetworkBase> GetNetwork(std::string networkName);
 
 #endif
