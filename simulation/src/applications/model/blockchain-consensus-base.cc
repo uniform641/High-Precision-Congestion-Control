@@ -23,14 +23,21 @@ void BlockchainConsensusBase::Init(Ptr<BlockchainBlockchain> blockchain,
                     Ptr<BlockchainNetworkBase> network,
                     Ptr<BlockchainTxpool> txpool,
                     Ptr<BlockchainVerifier> verifier,
-                    std::string consensusName) {
-    m_blockchain = blockchain;
-    m_network = network;
-    m_txpool = txpool;
-    m_verifier = verifier;
-    algorithm = ConsensusAlgorithmType(consensusName);
-    state = BCNS_NONE;
-    role = BCNR_NONE;
+                    Ptr<std::vector<NodeAddress>> neighborId,
+                    uint64_t nodeIndex) {
+    // do nothing
+}
+
+BlockchainConsensusAlgorithm BlockchainConsensusBase::GetConsensusAlgorithmType() {
+    return BCA_NONE;
+}
+
+BlockchainConsensusNodeState BlockchainConsensusBase::GetConsensusNodeState() {
+    return BCNS_NONE;
+}
+
+BlockchainConsensusNodeRole BlockchainConsensusBase::GetConsensusNodeRole() {
+    return BCNR_NONE;
 }
 
 
@@ -45,7 +52,7 @@ BlockchainConsensusAlgorithm ConsensusAlgorithmType(std::string consensus) {
     }
 }
 
-Ptr<BlockchainConsensusBase> GetConsensusAlgorithm(std::string consensus) {
+Ptr<BlockchainConsensusBase> CreateConsensusAlgorithm(std::string consensus) {
     switch (ConsensusAlgorithmType(consensus)) {
         case BCA_PBFT:
             return CreateObject<BlockchainConsensusPBFT>();

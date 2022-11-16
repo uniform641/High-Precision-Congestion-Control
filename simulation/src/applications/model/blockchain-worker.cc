@@ -48,12 +48,20 @@ void BlockchainWorker::StartApplication (void) {
     m_blockchain = CreateObject<BlockchainBlockchain>();
     m_txpool = CreateObject<BlockchainTxpool>();
     m_verifier = CreateObject<BlockchainVerifier>();
-    m_consensus = GetConsensusAlgorithm(m_consensusName);
+    m_consensus = CreateConsensusAlgorithm(m_consensusName);
     m_network = GetNetwork(m_networkType);
 }
 
 void BlockchainWorker::StopApplication (void) {
     NS_LOG_FUNCTION_NOARGS();
+}
+
+NodeAddress BlockchainWorker::GetNodeId() {
+    return m_nodeId;
+}
+
+uint64_t BlockchainWorker::GetNodeIndex() {
+    return m_nodeIndex;
 }
 
 }

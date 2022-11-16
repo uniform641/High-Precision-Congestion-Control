@@ -2,6 +2,7 @@
 #define BLOCKCHAIN_CONSENSUS_BASE_H
 
 #include <string>
+#include <vector>
 
 #include "ns3/object.h"
 #include "ns3/ptr.h"
@@ -51,30 +52,19 @@ public:
                       Ptr<BlockchainNetworkBase> network,
                       Ptr<BlockchainTxpool> txpool,
                       Ptr<BlockchainVerifier> verifier,
-                      std::string consensusName);
+                      Ptr<std::vector<NodeAddress>> neighborId,
+                      uint64_t nodeIndex);
     // start consensus
     virtual void Start();
     // stop consensus
     virtual void Stop();
-    virtual Ptr<BlockchainBlockchain> GetBlockchain();
-    virtual Ptr<BlockchainNetworkBase> GetNetwork();
-    virtual Ptr<BlockchainTxpool> GetTxpool();
-    virtual Ptr<BlockchainVerifier> GetVerifier();
-
-private:
-    Ptr<BlockchainBlockchain> m_blockchain;
-    Ptr<BlockchainNetworkBase> m_network;
-    Ptr<BlockchainTxpool> m_txpool;
-    Ptr<BlockchainVerifier> m_verifier;
-
-    BlockchainConsensusAlgorithm algorithm;
-    BlockchainConsensusNodeState state;
-    BlockchainConsensusNodeRole role;
-
+    virtual BlockchainConsensusAlgorithm GetConsensusAlgorithmType();
+    virtual BlockchainConsensusNodeState GetConsensusNodeState();
+    virtual BlockchainConsensusNodeRole GetConsensusNodeRole();
 };
 
 BlockchainConsensusAlgorithm ConsensusAlgorithmType(std::string consensus);
-Ptr<BlockchainConsensusBase> GetConsensusAlgorithm(std::string consensus);
+Ptr<BlockchainConsensusBase> CreateConsensusAlgorithm(std::string consensus);
 }
 
 #endif

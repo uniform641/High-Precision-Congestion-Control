@@ -2,6 +2,8 @@
 #define BLOCKCHAIN_WORKER
 
 #include <string>
+#include <map>
+#include <vector>
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
@@ -28,12 +30,14 @@ public:
     BlockchainWorker ();
     virtual ~BlockchainWorker ();
 
+    NodeAddress GetNodeId();
+    uint64_t GetNodeIndex();
+
 
 protected:
     virtual void DoDispose (void);
 
 private:
-
     virtual void StartApplication (void);
     virtual void StopApplication (void);
 
@@ -41,10 +45,11 @@ private:
     NodeAddress m_nodeId;
     std::string m_consensusName; // ['pbft', 'raft']
     std::string m_networkType; // ['rdma', 'tcp', 'p2p']
+    // Ptr<std::map<uint64_t, 
     Ptr<BlockchainBlockchain> m_blockchain;
-    Ptr<BlockchainNetworkBase> m_network;
     Ptr<BlockchainTxpool> m_txpool;
     Ptr<BlockchainVerifier> m_verifier;
+    Ptr<BlockchainNetworkBase> m_network;
     Ptr<BlockchainConsensusBase> m_consensus;
 
 };
