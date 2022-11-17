@@ -36,8 +36,32 @@ void BlockchainConsensusPBFT::Init(Ptr<BlockchainBlockchain> blockchain,
     m_view = 0;
     m_blockNumber = 0;
 
+    m_nodeRole = BlockchainConsensusNodeRole::BCNR_FOLLOWER;
+    m_nodeState = BlockchainConsensusNodeState::BCNS_INIT;
+
     m_neighborId = std::vector<NodeAddress>(*neighborId);
     m_neighborId.erase(std::remove(m_neighborId.begin(), m_neighborId.end(), m_nodeId), m_neighborId.end());
 }
+
+void Start() {
+
+}
+
+void Stop() {
+
+}
+
+BlockchainConsensusAlgorithm BlockchainConsensusPBFT::GetConsensusAlgorithmType() {
+    return BlockchainConsensusAlgorithm::BCA_PBFT;
+}
+
+BlockchainConsensusNodeRole BlockchainConsensusPBFT::GetConsensusNodeRole() {
+    return m_nodeRole;
+}
+
+BlockchainConsensusNodeState BlockchainConsensusPBFT::GetConsensusNodeState() {
+    return m_nodeState;
+}
+
 
 }

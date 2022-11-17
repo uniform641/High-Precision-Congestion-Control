@@ -29,15 +29,15 @@ void BlockchainConsensusBase::Init(Ptr<BlockchainBlockchain> blockchain,
 }
 
 BlockchainConsensusAlgorithm BlockchainConsensusBase::GetConsensusAlgorithmType() {
-    return BCA_NONE;
+    return BlockchainConsensusAlgorithm::BCA_NONE;
 }
 
 BlockchainConsensusNodeState BlockchainConsensusBase::GetConsensusNodeState() {
-    return BCNS_NONE;
+    return BlockchainConsensusNodeState::BCNS_NONE;
 }
 
 BlockchainConsensusNodeRole BlockchainConsensusBase::GetConsensusNodeRole() {
-    return BCNR_NONE;
+    return BlockchainConsensusNodeRole::BCNR_NONE;
 }
 
 

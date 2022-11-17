@@ -11,6 +11,8 @@
 #include "blockchain-consensus-base.h"
 
 namespace ns3 {
+float blockchainConsensusPBFTLeaderTimeout = 100; // ms
+
 class BlockchainConsensusPBFT : public BlockchainConsensusBase, public Object {
 public:
     BlockchainConsensusPBFT();
@@ -33,12 +35,15 @@ public:
     BlockchainConsensusNodeState GetConsensusNodeState() override;
     BlockchainConsensusNodeRole GetConsensusNodeRole() override;
 
+    void UpdateNodeRole();
 private:
     uint64_t m_view;
     uint64_t m_blockNumber;
     std::vector<NodeAddress> m_neighborId;
     uint64_t m_nodeIndex;
     NodeAddress m_nodeId;
+    BlockchainConsensusNodeRole m_nodeRole;
+    BlockchainConsensusNodeState m_nodeState;
 
     Ptr<BlockchainBlockchain> m_blockchain;
     Ptr<BlockchainNetworkBase> m_network;

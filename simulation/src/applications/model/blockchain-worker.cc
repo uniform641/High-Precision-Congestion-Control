@@ -24,6 +24,11 @@ TypeId BlockchainWorker::GetTypeId (void) {
                       StringValue("tcp"),
                       MakeStringAccessor(&BlockchainWorker::m_networkType),
                       MakeStringChecker())
+        .AddAttribute("NodeIndex2IpAddress",
+                      "map node index to ip address",
+                      PointerValue(),
+                      MakePointerAccessor(&BlockchainWorker::m_nodeIndex2Ip),
+                      MakePointerChecker<std::map<uint64_t, Ipv4Address>>())
     ;
     return tid;
 }
@@ -50,6 +55,11 @@ void BlockchainWorker::StartApplication (void) {
     m_verifier = CreateObject<BlockchainVerifier>();
     m_consensus = CreateConsensusAlgorithm(m_consensusName);
     m_network = GetNetwork(m_networkType);
+
+    Ptr<std::vector<NodeAddress>> neighborId = CreateObject<std::vector<NodeAddress>>();
+    for (auto it : *m_nodeIndex2Ip)
+        neighborId->push_back(GenerateWorkerAddress(it.first));
+    m_consensus->Init(m_blockchain, m_network, m_txpool, m_verifier, neighborId, m_nodeIndex);
 }
 
 void BlockchainWorker::StopApplication (void) {

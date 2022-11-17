@@ -10,6 +10,7 @@
 #include "ns3/ptr.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/uinteger.h"
+#include "ns3/pointer.h"
 
 #include "blockchain-common.h"
 #include "blockchain-verifier.h"
@@ -45,7 +46,7 @@ private:
     NodeAddress m_nodeId;
     std::string m_consensusName; // ['pbft', 'raft']
     std::string m_networkType; // ['rdma', 'tcp', 'p2p']
-    // Ptr<std::map<uint64_t, 
+    Ptr<std::map<uint64_t, Ipv4Address>> m_nodeIndex2Ip;
     Ptr<BlockchainBlockchain> m_blockchain;
     Ptr<BlockchainTxpool> m_txpool;
     Ptr<BlockchainVerifier> m_verifier;
