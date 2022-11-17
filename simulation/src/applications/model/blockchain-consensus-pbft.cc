@@ -34,7 +34,8 @@ void BlockchainConsensusPBFT::Init(Ptr<BlockchainBlockchain> blockchain,
     m_nodeId = GenerateWorkerAddress(nodeIndex);
 
     m_view = 0;
-    m_blockNumber = 0;
+    m_numBlock = 0;
+    m_numNode = neighborId->size();
 
     m_nodeRole = BlockchainConsensusNodeRole::BCNR_FOLLOWER;
     m_nodeState = BlockchainConsensusNodeState::BCNS_INIT;
@@ -63,5 +64,37 @@ BlockchainConsensusNodeState BlockchainConsensusPBFT::GetConsensusNodeState() {
     return m_nodeState;
 }
 
+void BlockchainConsensusPBFT::UpdateNodeRole() {
+    if (IsLeader() && m_nodeRole != BlockchainConsensusNodeRole::BCNR_LEADER) {
+        m_nodeRole = BlockchainConsensusNodeRole::BCNR_LEADER;
+        PackAndPreprepare();
+    } else if (!IsLeader() && m_nodeRole == BlockchainConsensusNodeRole::BCNR_LEADER) {
+        m_nodeRole = BlockchainConsensusNodeRole::BCNR_FOLLOWER;
+    }
+}
+
+bool BlockchainConsensusPBFT::IsLeader() {
+    return ((m_view + m_numBlock) % m_numNode) + 1 == m_nodeIndex;
+}
+
+void BlockchainConsensusPBFT::PackAndPreprepare() {
+    Pack();
+    if (m_blockToConsensus->IsEmptyBlock()) {
+        // wait for timeout(for simplicity)
+        return;
+    }
+
+}
+
+void BlockchainConsensusPBFT::Pack() {
+    m_blockToConsensus = CreateObject<Block>();
+    uint64_t newBlockIndex = m_blockchain->GetNextBlockIndex();
+    m_blockToConsensus->m_id = GenerateBlockID(newBlockIndex, m_nodeId);
+    m_blockToConsensus->m_parentId = m_blockchain->GetTailBlockId();
+    m_blockToConsensus->m_miner = m_nodeId;
+    m_blockToConsensus->m_createTime = 0; // TODO: not implement
+
+    
+}
 
 }

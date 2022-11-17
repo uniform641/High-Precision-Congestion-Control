@@ -131,7 +131,9 @@ public:
         return *m_txpool;
     }
 
-
+    uint64_t GetTxNum() {
+        return m_txpool->size();
+    }
 };
 }
 

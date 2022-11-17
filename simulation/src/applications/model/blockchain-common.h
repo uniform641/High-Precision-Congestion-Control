@@ -31,12 +31,15 @@ struct Block {
     BlockID m_parentId;
     NodeAddress m_miner;
     uint64_t m_createTime;
-    uint64_t m_dataLength;
     uint64_t m_txCount;
     std::vector<Ptr<Transaction>> m_txs;
 
-    Block(BlockID id, NodeAddress miner, uint64_t createTime, uint64_t dataLength, uint64_t txCount) :
-            m_id(id), m_miner(miner), m_createTime(createTime), m_dataLength(dataLength), m_txCount(txCount) {}
+    Block(BlockID id, NodeAddress miner, uint64_t createTime, uint64_t txCount) :
+            m_id(id), m_miner(miner), m_createTime(createTime), m_txCount(txCount) {}
+
+    bool IsEmptyBlock() {
+        return m_txCount == 0;
+    }
 };
 
 NodeAddress GenerateWorkerAddress(uint64_t workerIndex) {

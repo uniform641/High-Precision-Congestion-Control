@@ -64,12 +64,22 @@ public:
             return;
         m_height++;
         (*m_blocks)[block->m_id] = block;
+        m_tail = block;
     }
 
     bool HasBlock(BlockID blockId) {
         return (*m_blocks).find(blockId) != (*m_blocks).end();
     }
 
+    uint64_t GetNextBlockIndex() {
+        return m_height + 1;
+    }
+
+    BlockID GetTailBlockId() {
+        if (m_tail == nullptr)
+            return (BlockID)0;
+        return m_tail->m_id;
+    }
 };
 }
 
