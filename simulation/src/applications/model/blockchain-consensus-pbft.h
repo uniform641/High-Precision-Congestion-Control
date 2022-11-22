@@ -13,6 +13,10 @@
 
 namespace ns3 {
 float blockchainConsensusPBFTLeaderTimeout = 100; // ms
+float blockchainConsensusFetchTxInterval = 5; //ms
+uint64_t blockchainConsensusFetchTxMaxAttempt = 4;
+uint64_t blockchainConsensusMinTxsInBlock = 20;
+bool blockchainConsensusOnlySendTxHead = false;
 
 class BlockchainConsensusPBFT : public BlockchainConsensusBase, public Object {
 public:
@@ -36,11 +40,15 @@ public:
     BlockchainConsensusNodeState GetConsensusNodeState() override;
     BlockchainConsensusNodeRole GetConsensusNodeRole() override;
 
+
     void UpdateNodeRole();
     bool IsLeader();
+    void CheckTimeout();
     void PackAndPreprepare();
-    void Pack();
-    void FetchTxs(Ptr<std::vector<Ptr<Transaction>>>, uint64_t minTxNum, float maxTime);
+    inline void ResetRoundActive();
+    void Preprepare();
+    void Pack(Ptr<std::vector<Ptr<Transaction>>> txs);
+    void FetchTxs(Ptr<std::vector<Ptr<Transaction>>> txs, uint64_t attemptLeft = blockchainConsensusFetchTxMaxAttempt);
 private:
     uint64_t m_view;
     uint64_t m_numBlock;
@@ -57,7 +65,7 @@ private:
     Ptr<BlockchainTxpool> m_txpool;
     Ptr<BlockchainVerifier> m_verifier;
 
-    uint64_t m_fetchTxAttemptInterval; // ms
+    Time m_currentRoundLastSeenActive;
 };
 }
 
